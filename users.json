@@ -1,0 +1,19 @@
+[ {
+  "firstName" : "Adam",
+  "lastName" : "Nowak",
+  "email" : "adam@onet.eu",
+  "password" : "$2a$10$ktdKvSPEUm.yWaKagkvaCO520OU1OsYXSokdEXbDaiwMjgSvTNy4y",
+  "dateOfBirth" : [ 1992, 5, 20 ]
+}, {
+  "firstName" : "Jan",
+  "lastName" : "Kowalski",
+  "email" : "janek@gmail.com",
+  "password" : "$2a$10$1jxDoUF2a3Zt9ndtkybFZelwf75Vuezj7Y8ZGVdtH9VQxMOP3CKQ2",
+  "dateOfBirth" : [ 2002, 2, 12 ]
+}, {
+  "firstName" : "Edyta",
+  "lastName" : "Nowak",
+  "email" : "edyta.nowak@gmail.com",
+  "password" : "$2a$10$Y32S9zyS6bh2Lqji4pfGWOA3WzJ0ckgoMRq/kp7tJhYjAW8NTFpOK",
+  "dateOfBirth" : [ 1990, 1, 3 ]
+} ]
