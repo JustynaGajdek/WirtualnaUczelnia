@@ -5,17 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FileUserRepository implements UserRepository {
-    private final String fileName;
+
+    private static final String FILE_NAME = "users.json";
     private final ObjectMapper objectMapper;
 
-    public FileUserRepository(String fileName) {
-        this.fileName = fileName;
+    public FileUserRepository() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.findAndRegisterModules();
     }
@@ -23,6 +24,9 @@ public class FileUserRepository implements UserRepository {
     @Override
     public boolean insert(User user) {
         List<User> users = findAll();
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) return false;
+
 
         for (User u : users) {
             if (u.getEmail().equalsIgnoreCase(user.getEmail())) {
@@ -32,36 +36,31 @@ public class FileUserRepository implements UserRepository {
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-
-        User hashedUser = new User(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                hashedPassword,
-                user.getDateOfBirth()
-        );
-        users.add(hashedUser);
+        user.setPassword(hashedPassword);
+        users.add(user);
 
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName), users);
+            String json = objectMapper
+                    .writerFor(new TypeReference<List<User>>(){})
+                    .writeValueAsString(users);
+            try (FileOutputStream fos = new FileOutputStream(FILE_NAME)) {
+                fos.write(json.getBytes(StandardCharsets.UTF_8));
+            }
             return true;
         } catch (IOException e) {
-            throw new RuntimeException("Błąd podczas zapisu użytkowników do pliku JSON", e);
+            throw new RuntimeException("Błąd zapisu JSON‑a", e);
         }
     }
 
     @Override
     public List<User> findAll() {
-        File file = new File(fileName);
-        if (!file.exists() || file.length() == 0) {
-            return new ArrayList<>();
-        }
-
-        try {
-            return objectMapper.readValue(file, new TypeReference<List<User>>() {
-            });
+        try (FileInputStream fis = new FileInputStream(FILE_NAME)) {
+            byte[] bytes = fis.readAllBytes();
+            return objectMapper.readValue(bytes, new TypeReference<List<User>>() {});
+        } catch (FileNotFoundException e) {
+            return new LinkedList<>();
         } catch (IOException e) {
-            throw new RuntimeException("Błąd podczas odczytu użytkowników z pliku JSON", e);
+            throw new RuntimeException("Błąd odczytu.", e);
         }
     }
 }

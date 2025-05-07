@@ -8,12 +8,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileUserRepositoryTest {
-    private static final String TEST_FILE = "test_users.json";
+    private static final String TEST_FILE = "users.json";
     private FileUserRepository fileUserRepository;
 
     @BeforeEach
     void setUp() {
-        fileUserRepository = new FileUserRepository(TEST_FILE);
+        fileUserRepository = new FileUserRepository();
     }
 
     @AfterEach
@@ -26,7 +26,7 @@ public class FileUserRepositoryTest {
 
     @Test
     void insertNewUser() {
-        User user = new User("Jan", "Kowalski", "jan.kowalski@example.com", "asd123", LocalDate.of(1990, 1, 1));
+        Student user = new Student("Jan", "Kowalski", "jan.kowalski@onet.com", "asd123", LocalDate.of(1990, 1, 1), 12365);
 
         boolean result = fileUserRepository.insert(user);
         assertTrue(result, "Użytkownik powinien zostać dodany.");
@@ -39,8 +39,8 @@ public class FileUserRepositoryTest {
 
     @Test
     void findAllUsers() {
-        User user1 = new User("Alicja", "Rak", "alicja@onet.com", "asd", LocalDate.of(1995, 6, 15));
-        User user2 = new User("Jan", "Kot", "jan@onet.com", "zxc", LocalDate.of(1988, 12, 5));
+        Teacher user1 = new Teacher("Alicja", "Rak", "alicja@onet.com", "asd", LocalDate.of(1995, 6, 15), "Math" );
+        Administrator user2 = new Administrator("Jan", "Kot", "jan@onet.com", "zxc", LocalDate.of(1988, 12, 5));
 
         fileUserRepository.insert(user1);
         fileUserRepository.insert(user2);
@@ -54,8 +54,8 @@ public class FileUserRepositoryTest {
 
     @Test
     void insertDuplicateEmail() {
-        User user1 = new User("Piotr", "Nowak", "piotr@example.com", "qwe", LocalDate.of(1985, 10, 10));
-        User user2 = new User("Marek", "Wiśniewski", "piotr@example.com", "asd", LocalDate.of(1989, 3, 25));
+        Student user1 = new Student("Piotr", "Nowak", "piotr@example.com", "qwe", LocalDate.of(1985, 10, 10), 2546);
+        Student user2 = new Student("Marek", "Wiśniewski", "piotr@example.com", "asd", LocalDate.of(1989, 3, 25), 368);
 
         boolean result1 = fileUserRepository.insert(user1);
         boolean result2 = fileUserRepository.insert(user2);
@@ -81,11 +81,59 @@ public class FileUserRepositoryTest {
 
     @Test
     void passwordIsHashed() {
-        User user = new User("Anna", "Dąbrowska", "anna@example.com", "123asd", LocalDate.of(1993, 7, 20));
+        Administrator user = new Administrator("Anna", "Dąbrowska", "anna@example.com", "123asd", LocalDate.of(1993, 7, 20));
 
         fileUserRepository.insert(user);
         List<User> users = fileUserRepository.findAll();
 
         assertNotEquals("bezpieczneHaslo", users.get(0).getPassword(), "Hasło nie powinno być jawne.");
     }
+
+    @Test
+    void teacherToStringContainsCorrectInfo() {
+        Teacher teacher = new Teacher(
+                "Magdalena", "Nowak", "magda@edu.pl", "haslo123",
+                LocalDate.of(1980, 5, 10), "Biology"
+        );
+
+        fileUserRepository.insert(teacher);
+        List<User> users = fileUserRepository.findAll();
+
+        assertEquals(1, users.size(), "Powinien być 1 użytkownik.");
+        String output = users.get(0).toString();
+
+        assertTrue(output.contains("Magdalena"));
+        assertTrue(output.contains("Biology"));
+        assertTrue(output.contains("Nowak"));
+    }
+
+    @Test
+    void hashedPasswordDoesNotMatchOriginalPlaintext() {
+        Student user = new Student("Ada", "Cat", "ada@edu.com", "secret123", LocalDate.of(1991, 12, 10), 54321);
+        fileUserRepository.insert(user);
+
+        User saved = fileUserRepository.findAll().get(0);
+        assertNotEquals("secret123", saved.getPassword());
+        assertTrue(saved.getPassword().startsWith("$2a$"));
+    }
+
+    @Test
+    void insertFailsForUserWithEmptyEmail() {
+        Administrator admin = new Administrator("Eva", "Zero", "", "haslo", LocalDate.of(1990, 3, 3));
+        boolean result = fileUserRepository.insert(admin);
+        assertFalse(result, "Nie można zapisać użytkownika bez emaila.");
+    }
+
+    @Test
+    void insertingMultipleUsersIncreasesListSize() {
+        int initialSize = fileUserRepository.findAll().size();
+
+        fileUserRepository.insert(new Administrator("Jan", "Kot", "j.kot@admin.com", "abc123", LocalDate.of(2000, 1, 1)));
+        fileUserRepository.insert(new Student("Ewa", "Lis", "ewa@edu.com", "abc32", LocalDate.of(2000, 1, 1), 5555));
+
+        int newSize = fileUserRepository.findAll().size();
+        assertEquals(initialSize + 2, newSize);
+    }
+
+
 }

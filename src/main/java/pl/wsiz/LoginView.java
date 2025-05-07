@@ -7,53 +7,63 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LoginView {
-    private final FileUserRepository userRepository;
-    private final Scanner scanner;
+    private final UserRepository userRepository;
+    private User loggedUser;
 
-    public LoginView(FileUserRepository userRepository) {
+    public LoginView(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.scanner = new Scanner(System.in);
     }
 
     public void login() {
-        boolean isAuthenticated = false;
+        String email;
+        String password;
 
-        while (!isAuthenticated) {
-            System.out.print("Podaj login (e-mail): ");
-            String email = scanner.nextLine();
-
-            System.out.print("Podaj hasło: ");
-            String password = scanner.nextLine();
-
-            User user = authenticateUser(email, password);
-
-            if (user != null) {
-                System.out.println("\nLogowanie udane!");
-                printUserDetails(user);
-                isAuthenticated = true;
-            } else {
-                System.out.println("\nNiepoprawny login lub hasło. Spróbuj ponownie.");
-            }
+        String autologin = System.getenv("USER_AUTOLOGIN");
+        if ("true".equalsIgnoreCase(autologin)) {
+            email    = System.getenv("USER_EMAIL");
+            password = System.getenv("USER_PASSWORD");
+        } else {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("====================");
+            System.out.println("EKRAN LOGOWANIA");
+            System.out.print  ("Podaj adres e-mail: ");
+            email = scanner.nextLine();
+            System.out.print  ("Podaj hasło: ");
+            password = scanner.nextLine();
         }
-    }
 
-    private User authenticateUser(String email, String password) {
-        List<User> users = userRepository.findAll();
-
-        for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(email)) {
-                if (BCrypt.checkpw(password, user.getPassword())) {
-                    return user;
+        while (true) {
+            List<User> users = userRepository.findAll();
+            for (User u : users) {
+                if (u.getEmail().equalsIgnoreCase(email)
+                        && BCrypt.checkpw(password, u.getPassword())) {
+                    this.loggedUser = u;
+                    System.out.println("\nLogowanie udane!");
+                    printUserDetails(u);
+                    return;
                 }
             }
+
+            System.out.println("\nLogowanie nieudane! Spróbuj ponownie!\n");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Podaj adres e-mail: ");
+            email = scanner.nextLine();
+            System.out.print("Podaj hasło: ");
+            password = scanner.nextLine();
         }
-        return null;
     }
+
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+
 
     private void printUserDetails(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String role = user.getClass().getSimpleName();
 
-        String userDetails = """
+        String info = """
                 --- Dane użytkownika ---
                 Imię i nazwisko: %s %s
                 Adres email: %s
@@ -65,6 +75,6 @@ public class LoginView {
                 user.getDateOfBirth().format(formatter)
         );
 
-        System.out.println(userDetails);
+        System.out.println(info);
     }
 }
