@@ -1,4 +1,6 @@
-package pl.wsiz;
+package pl.wsiz.repo;
+
+import pl.wsiz.model.User;
 
 import java.util.List;
 

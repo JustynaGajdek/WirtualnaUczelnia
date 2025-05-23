@@ -1,4 +1,4 @@
-package pl.wsiz;
+package pl.wsiz.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -7,22 +7,22 @@ import java.time.LocalDate;
 @JsonTypeName("teacher")
 public class Teacher extends User {
 
-    private String subject;
+    private String academicDegree;
 
     public Teacher() {
     }
 
-    public Teacher(String firstName, String lastName, String email, String password, LocalDate dateOfBirth, String subject) {
+    public Teacher(String firstName, String lastName, String email, String password, LocalDate dateOfBirth, String academicDegree) {
         super(firstName, lastName, email, password, dateOfBirth);
-        this.subject = subject;
+        this.academicDegree = academicDegree;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getAcademicDegree() {
+        return academicDegree;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setAcademicDegree(String academicDegree) {
+        this.academicDegree = academicDegree;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Teacher extends User {
                 ", lastName='" + getLastName() + '\'' +
                 ", email='" + getEmail() + '\'' +
                 ", dateOfBirth=" + getDateOfBirth() +
-                ", subject='" + subject + '\'' +
+                ", academicDegree='" + academicDegree + '\'' +
                 '}';
     }
 }

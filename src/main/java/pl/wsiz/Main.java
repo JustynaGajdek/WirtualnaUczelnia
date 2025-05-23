@@ -1,5 +1,13 @@
 package pl.wsiz;
 
+import pl.wsiz.model.Administrator;
+import pl.wsiz.model.Student;
+import pl.wsiz.model.Teacher;
+import pl.wsiz.model.User;
+import pl.wsiz.repo.FileUserRepository;
+import pl.wsiz.view.AdministratorMenuView;
+import pl.wsiz.view.LoginView;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +21,7 @@ public class Main {
                 "adam@34", LocalDate.of(1992, 5, 20), 1234);
 
         User user2 = new Teacher("Jan", "Kowalski", "janekk@gmail.com",
-                "jann4#1@34", LocalDate.of(2002, 2, 12), "Math");
+                "jann4#1@34", LocalDate.of(2002, 2, 12), "mgr");
 
         User user3 = new Administrator("Edyta", "Nowak", "edyta.nowak1@gmail.com",
                 "edyta#%551", LocalDate.of(1990, 1, 3));
@@ -34,6 +42,11 @@ public class Main {
         System.out.println("\nZalogowano jako:");
 
         printUser(loggedUser);
+
+        if (loggedUser instanceof Administrator) {
+            new AdministratorMenuView(fileUserRepository).initialize();
+        }
+
 
     }
 

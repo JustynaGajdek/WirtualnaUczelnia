@@ -1,4 +1,4 @@
-package pl.wsiz;
+package pl.wsiz.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 

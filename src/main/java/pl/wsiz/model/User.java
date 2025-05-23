@@ -1,7 +1,10 @@
-package pl.wsiz;
+package pl.wsiz.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import pl.wsiz.model.Administrator;
+import pl.wsiz.model.Student;
+import pl.wsiz.model.Teacher;
 
 import java.time.LocalDate;
 

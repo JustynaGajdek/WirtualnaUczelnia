@@ -1,6 +1,12 @@
-package pl.wsiz;
+package pl.wsiz.repo;
 
 import org.junit.jupiter.api.*;
+import pl.wsiz.model.Administrator;
+import pl.wsiz.model.Student;
+import pl.wsiz.model.Teacher;
+import pl.wsiz.model.User;
+import pl.wsiz.repo.FileUserRepository;
+
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;

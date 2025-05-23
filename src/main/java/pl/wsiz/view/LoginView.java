@@ -1,6 +1,8 @@
-package pl.wsiz;
+package pl.wsiz.view;
 
 import org.mindrot.jbcrypt.BCrypt;
+import pl.wsiz.model.User;
+import pl.wsiz.repo.UserRepository;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
