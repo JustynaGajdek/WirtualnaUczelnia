@@ -28,6 +28,15 @@ public class Main {
 
         Administrator user4 = new Administrator("Andrzej", "Nowak", "andrzej.nowak@gmail.com",
                 "andrzej#%51xxa", LocalDate.of(1992, 10, 25));
+        Teacher teacher1 = new Teacher("Zenon", "Lis", "zen@gmail.com",
+                "jann4#1@34", LocalDate.of(2002, 2, 12), "mgr");
+        Teacher teacher2 = new Teacher("Barbara", "Cieśla", "basia@gmail.com",
+                "jann4#1@34", LocalDate.of(2002, 2, 12), "prof.");
+        Student stud1 = new Student("Karolina", "Szal", "edyta.1@gmail.com",
+                "edyta#%551", LocalDate.of(1990, 1, 3), 456);
+        Student stud2 = new Student("Bart", "Kot", "bart1@gmail.com",
+                "edyta#%551", LocalDate.of(1990, 1, 3), 459);
+
 
         FileUserRepository fileUserRepository = new FileUserRepository();
 
@@ -35,6 +44,10 @@ public class Main {
         fileUserRepository.insert(user2);
         fileUserRepository.insert(user3);
         fileUserRepository.insert(user4);
+        fileUserRepository.insert(teacher1);
+        fileUserRepository.insert(teacher2);
+        fileUserRepository.insert(stud1);
+        fileUserRepository.insert(stud2);
 
         LoginView loginView = new LoginView(fileUserRepository);
         loginView.login();

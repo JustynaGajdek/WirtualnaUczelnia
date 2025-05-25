@@ -19,11 +19,19 @@ public class UserListView {
     public void display() {
         System.out.println("\n======= Lista Użytkowników =======");
         System.out.println(withSpaces("Imię", 20)
-                +withSpaces("Nazwisko", 20)
-                +withSpaces("E-mail", 32)
-                +withSpaces("Rola", 10));
+                + withSpaces("Nazwisko", 20)
+                + withSpaces("E-mail", 32)
+                + withSpaces("Rola", 10));
         System.out.println("-".repeat(90));
         List<User> users = userRepository.findAll();
+        users.sort((o1, o2) -> {
+            int compareUsers = o1.getLastName().compareTo(o2.getLastName());
+            if (compareUsers == 0) {
+                return o1.getFirstName().compareToIgnoreCase(o2.getFirstName());
+            } else {
+                return compareUsers;
+            }
+        });
         for (User user : users) {
             String role;
             if (user instanceof Student) {
@@ -36,9 +44,9 @@ public class UserListView {
                 throw new RuntimeException("Nieznany typ roli użytkownika");
             }
             System.out.println(withSpaces(user.getFirstName(), 20)
-                    +withSpaces(user.getLastName(), 20)
-                    +withSpaces(user.getEmail(), 32)
-                    +withSpaces(role, 10));
+                    + withSpaces(user.getLastName(), 20)
+                    + withSpaces(user.getEmail(), 32)
+                    + withSpaces(role, 10));
         }
     }
 
