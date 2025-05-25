@@ -31,6 +31,8 @@ public class AdministratorMenuView {
                 switch (chosen) {
                     case 1 -> new UserListView(userRepository).display();
                     case 2 -> new AddStudentView(userRepository).initialize();
+                    case 3 -> new AddTeacherView(userRepository).initialize();
+                    case 4 -> new AddAdminView(userRepository).initialize();
                 }
 
 

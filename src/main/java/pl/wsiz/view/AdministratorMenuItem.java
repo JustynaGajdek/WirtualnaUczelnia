@@ -3,7 +3,9 @@ package pl.wsiz.view;
 public enum AdministratorMenuItem {
     USER_LIST(1, "lista użytkowników"),
     ADD_USER(2, "Dodaj nowego studenta"),
-    EXIT(3, "wyjście z programu");
+    ADD_TEACHER(3, "Dodaj nowego nauczyciela"),
+    ADD_ADMIN(4, "Dodaj nowego administratora"),
+    EXIT(5, "wyjście z programu");
 
     private int number;
     private String descriptionPl;
